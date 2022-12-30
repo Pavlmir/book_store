@@ -1,6 +1,7 @@
 import React, { Component } from "react";
+import { Posts } from "./components/Posts"
 
-class Note extends Component {
+class AppClass extends Component {
     // constructor(props) {
     //     super(props);
     //     this.state = {
@@ -12,10 +13,20 @@ class Note extends Component {
     state = {
         count: 0,
         someKey: false,
-        posts: [],
+        article: [],
         loading: true,
         comments: [],
-        isCounting: false
+        isCounting: false,
+        books: [
+            { id: "1", name: "JS Basics" },
+            { id: "2", name: "JS Advanced" },
+            { id: "3", name: "React JS" }
+        ],
+        posts: [
+            { id: "1", name: "JS Basics post" },
+            { id: "2", name: "JS Advanced post" },
+            { id: "3", name: "React JS post" }
+        ]
     };
 
     // handleClick() {
@@ -25,7 +36,7 @@ class Note extends Component {
         console.log("componentDidMount");
         fetch("https://jsonplaceholder.typicode.com/posts")
             .then(response => response.json())
-            .then(json => this.setState({ posts: json, loading: false }))
+            .then(json => this.setState({ article: json, loading: false }))
 
         // this.timerId = setInterval(() => {
         //     fetch("https://jsonplaceholder.typicode.com/comments")
@@ -35,7 +46,7 @@ class Note extends Component {
         // }, 3000)
         const userCount = localStorage.getItem("timer")
         if (userCount) {
-            this.setState({count: +userCount})
+            this.setState({ count: +userCount })
         }
     }
 
@@ -85,6 +96,14 @@ class Note extends Component {
         clearInterval(this.counterId);
     }
 
+    handleSomething = () => {
+        console.log("AppClass.jsx called");
+    }
+
+    removePost = (id) => {
+        this.setState({ posts: this.state.posts.filter(post => post.id !== id) });
+    }
+
     render() {
         return (
             <div className="container" style={countStyle}>
@@ -92,7 +111,7 @@ class Note extends Component {
                 <button onClick={this.decrement}>-</button>
                 <span style={{ margin: "0 0.75rem", display: "inline-block" }}>{this.state.count}</span>
                 <button onClick={this.increment}>+</button>
-                {this.state.loading ? <h3>Loading...</h3> : <h3>{this.state.posts.length}</h3>}
+                {this.state.loading ? <h3>Loading...</h3> : <h3>{this.state.article.length}</h3>}
                 <h1>React Timer</h1>
                 <h3>{this.state.count}</h3>
                 {!this.state.isCounting ? (
@@ -101,11 +120,18 @@ class Note extends Component {
                     <button onClick={this.handleStop}>Stop</button>
                 )}
                 <button onClick={this.handleReset}>Reset</button>
+                <div>
+                    {this.state.books.map((book, index) => (
+                        <h2 key={book.id}>{book.id} {book.name}</h2>
+                    ))}
+                </div>
+                <h1>Example</h1>
+                <div><Posts posts={this.state.posts} cb={this.handleSomething} removePost={this.removePost}/></div>
             </div>);
     }
 }
 
-export { Note }; // группа объектов
-// export default Note; один
+export { AppClass }; // группа объектов
+// export default AppClass; один
 
 const countStyle = { margin: "0 0.75rem" }
